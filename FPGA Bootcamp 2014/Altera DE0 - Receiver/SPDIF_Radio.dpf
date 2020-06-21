@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pin_planner>
+	<pin_info>
+		<pin name="SD_CLK" source="Pin Planner" >
+		</pin>
+		<pin name="SD_CMD" source="Pin Planner" >
+		</pin>
+		<pin name="SD_DAT[3]" source="Pin Planner" >
+		</pin>
+		<pin name="SD_DAT[2]" source="Pin Planner" >
+		</pin>
+		<pin name="SD_DAT[1]" source="Pin Planner" >
+		</pin>
+		<pin name="SD_DAT[0]" source="Pin Planner" >
+		</pin>
+		<pin name="Clk2" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[10]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[9]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[8]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[7]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[6]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[5]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[4]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[3]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[2]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[1]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_A[0]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[10]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[9]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[8]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[7]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[6]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[5]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[4]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[3]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[2]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[1]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_B[0]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[10]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[9]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[8]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[7]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[6]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[5]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[4]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[3]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[2]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[1]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_C[0]" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_Clk" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_MISO" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_MOSI" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_Rx" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_SCK" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_SCL" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_SDA" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_Tx" source="Pin Planner" >
+		</pin>
+		<pin name="HSMC_nSS" source="Pin Planner" >
+		</pin>
+	</pin_info>
+	<buses>
+	</buses>
+	<group_file_association>
+	</group_file_association>
+	<pin_planner_file_specifies>
+	</pin_planner_file_specifies>
+</pin_planner>

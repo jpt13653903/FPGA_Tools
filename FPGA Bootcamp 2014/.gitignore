@@ -1,0 +1,9 @@
+db
+incremental_db
+hc_output
+greybox_tmp
+output_files
+c5_pin_model_dump.txt
+PLLJ_PLLSPE_INFO.txt
+*.qws
+
