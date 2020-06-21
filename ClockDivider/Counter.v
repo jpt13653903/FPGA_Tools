@@ -21,19 +21,19 @@
 // n-bit synchronous up-counter
 
 module Counter #(
- parameter n = 8
+  parameter n = 8
 )(
- input nReset, 
- input Clk, 
+  input nReset, 
+  input Clk, 
 
- output reg [n-1:0]Output
+  output reg [n-1:0]Output
 );
 //------------------------------------------------------------------------------
  
- always @(negedge nReset, negedge Clk) begin
-  if(!nReset) Output <= 0;
-  else        Output <= Output + 1'b1;
- end
+  always @(negedge nReset, negedge Clk) begin
+    if(!nReset) Output <= 0;
+    else        Output <= Output + 1'b1;
+  end
 endmodule
 //------------------------------------------------------------------------------
 

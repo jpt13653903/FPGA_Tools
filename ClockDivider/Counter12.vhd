@@ -27,37 +27,37 @@ use ieee.std_logic_1164.all;
 --------------------------------------------------------------------------------
 
 entity Counter12 is
- port(
-  nReset: in  std_logic;
-  Clk   : in  std_logic;
-  Q     : out std_logic_vector(11 downto 0)
- );
+  port(
+    nReset: in  std_logic;
+    Clk   : in  std_logic;
+    Q     : out std_logic_vector(11 downto 0)
+  );
 end entity Counter12;
 --------------------------------------------------------------------------------
 
 architecture a1 of Counter12 is
- signal count: std_logic_vector(11 downto 0);
- signal D    : std_logic_vector(11 downto 0);
- signal ands : std_logic_vector(11 downto 1);
+  signal count: std_logic_vector(11 downto 0);
+  signal D    : std_logic_vector(11 downto 0);
+  signal ands : std_logic_vector(11 downto 1);
 --------------------------------------------------------------------------------
 
 begin
- ands(         1) <= count(0);
- ands(11 downto 2) <= ands(10 downto 1) and count(10 downto 1);
+  ands(          1) <= count(0);
+  ands(11 downto 2) <= ands(10 downto 1) and count(10 downto 1);
 
- D(         0) <= not count(0);
- D(11 downto 1) <= count(11 downto 1) xor ands(11 downto 1);
+  D(          0) <= not count(0);
+  D(11 downto 1) <= count(11 downto 1) xor ands(11 downto 1);
 --------------------------------------------------------------------------------
 
- process(Clk, nReset) is
- begin
-  if nReset = '0' then
-   count <= "000000000000";
-  elsif falling_edge(Clk) then
-   count <= D;
-  end if;
- end process;
+  process(Clk, nReset) is
+  begin
+    if nReset = '0' then
+      count <= "000000000000";
+    elsif falling_edge(Clk) then
+      count <= D;
+    end if;
+  end process;
 
- Q <= count;
+  Q <= count;
 end architecture a1;
 --------------------------------------------------------------------------------

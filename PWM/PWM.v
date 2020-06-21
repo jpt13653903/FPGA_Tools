@@ -19,59 +19,59 @@
 //==============================================================================
 
 module PWM #(
- parameter InputN  = 24,
- parameter OutputN =  8,
- parameter N       =  4)( // Order of the noise shaper; 0 => no noise shaper
+  parameter InputN  = 24,
+  parameter OutputN =  8,
+  parameter N       =  4)( // Order of the noise shaper; 0 => no noise shaper
 
- input             nReset,
- input             Clk,
- input             Sync, // fClk / 2^OutputN
- input [InputN-1:0]Duty,
+  input             nReset,
+  input             Clk,
+  input             Sync, // fClk / 2^OutputN
+  input [InputN-1:0]Duty,
 
- output reg PWM);
+  output reg PWM);
 //------------------------------------------------------------------------------
 
- reg  CounterSync;
+  reg  CounterSync;
 
- wire [OutputN-1:0]tD;
- reg  [OutputN-1:0]D;
- wire [OutputN-1:0]Count;
- wire              greater;
- reg               pSync;
+  wire [OutputN-1:0]tD;
+  reg  [OutputN-1:0]D;
+  wire [OutputN-1:0]Count;
+  wire              greater;
+  reg               pSync;
 //------------------------------------------------------------------------------
 
- Counter #(OutputN) Counter1(CounterSync, Clk, Count);
+  Counter #(OutputN) Counter1(CounterSync, Clk, Count);
  
- generate
-  if(N) begin
-   NS #(InputN, OutputN, N) NS1(nReset, Sync, Duty, tD);
-  end else begin
-   assign tD = Duty[InputN-1:InputN-OutputN] + Duty[InputN-OutputN-1];
-  end
- endgenerate
+  generate
+    if(N) begin
+      NS #(InputN, OutputN, N) NS1(nReset, Sync, Duty, tD);
+    end else begin
+      assign tD = Duty[InputN-1:InputN-OutputN] + Duty[InputN-OutputN-1];
+    end
+  endgenerate
 
- assign greater = (D > Count);
+  assign greater = (D > Count);
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   CounterSync <= 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      CounterSync <= 0;
 
-   PWM   <= 0;
-   D     <= 0;
-   pSync <= 1'b1;
+      PWM   <= 0;
+      D     <= 0;
+      pSync <= 1'b1;
 //------------------------------------------------------------------------------
    
-  end else begin
-   PWM <= greater;
+    end else begin
+      PWM <= greater;
 
-   if({pSync, Sync} == 2'b01) begin
-    CounterSync <= 1'b1;
-    D           <= tD;
-   end
+      if({pSync, Sync} == 2'b01) begin
+        CounterSync <= 1'b1;
+        D           <= tD;
+      end
    
-   pSync <= Sync;
+      pSync <= Sync;
+    end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

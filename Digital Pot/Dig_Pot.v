@@ -19,67 +19,67 @@
 //==============================================================================
 
 module Dig_Pot #(
- parameter       Default = 8'h0
+  parameter       Default = 8'h0
 )(
- input           nReset,
- input           Clk,
+  input           nReset,
+  input           Clk,
  
- input     [ 1:0]Pot,
- input           Limit, // If not set the position may roll over
+  input     [ 1:0]Pot,
+  input           Limit, // If not set the position may roll over
  
- output reg[ 7:0]Position,
+  output reg[ 7:0]Position,
  
- input     [ 7:0]Set,
- input           Latch);
+  input     [ 7:0]Set,
+  input           Latch);
 //------------------------------------------------------------------------------
 
- reg [10:0]count;
- reg [ 1:0]tPot[1:0];
+  reg [10:0]count;
+  reg [ 1:0]tPot[1:0];
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   Position <= Default;
-   count    <= 0;
-   tPot[0]  <= 0;
-   tPot[1]  <= 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      Position <= Default;
+      count    <= 0;
+      tPot[0]  <= 0;
+      tPot[1]  <= 0;
 //------------------------------------------------------------------------------
 
-  end else if(Latch) begin
-   Position <= Set;
-   count    <= 0;
+    end else if(Latch) begin
+      Position <= Set;
+      count    <= 0;
 //------------------------------------------------------------------------------
 
-  end else begin
-   tPot[0] <= Pot;
+    end else begin
+      tPot[0] <= Pot;
 //------------------------------------------------------------------------------
   
-   if(count == 11'd_1_171) begin // 3 ms for a 390.625 kHz clock
-    case({tPot[1], tPot[0]})
-     4'b00_01,
-     4'b01_11,
-     4'b11_10,
-     4'b10_00: begin
-      if(!Limit || ~&Position) Position <= Position + 1'b1;
-      tPot[1] <= tPot[0];
-      count   <= 0;
-     end
+      if(count == 11'd_1_171) begin // 3 ms for a 390.625 kHz clock
+        case({tPot[1], tPot[0]})
+          4'b00_01,
+          4'b01_11,
+          4'b11_10,
+          4'b10_00: begin
+            if(!Limit || ~&Position) Position <= Position + 1'b1;
+            tPot[1] <= tPot[0];
+            count   <= 0;
+          end
       
-     4'b00_10,
-     4'b01_00,
-     4'b11_01,
-     4'b10_11: begin
-      if(!Limit || |Position) Position <= Position - 1'b1;
-      tPot[1] <= tPot[0];
-      count   <= 0;
-     end
+          4'b00_10,
+          4'b01_00,
+          4'b11_01,
+          4'b10_11: begin
+            if(!Limit || |Position) Position <= Position - 1'b1;
+            tPot[1] <= tPot[0];
+            count   <= 0;
+          end
 
-     default:;
-    endcase
-   end else begin
-    count <= count + 1'b1;
-   end
+          default:;
+        endcase
+      end else begin
+        count <= count + 1'b1;
+      end
+    end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

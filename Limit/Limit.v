@@ -19,38 +19,38 @@
 //==============================================================================
 
 module Limit #(
- parameter N     =     8,
- parameter Lower = 8'h7F,
- parameter Upper = 8'h80)(
+  parameter N     =     8,
+  parameter Lower = 8'h7F,
+  parameter Upper = 8'h80)(
 
- input nReset,
- input Clk,
+  input nReset,
+  input Clk,
   
- input  [N-1:0]Input,   // Unsigned
- output [N-1:0]Output); // Unsigned
+  input  [N-1:0]Input,   // Unsigned
+  output [N-1:0]Output); // Unsigned
 //------------------------------------------------------------------------------
 
- wire [N-1:0]tInput;
- wire [N-1:0]tLower;
- wire [N-1:0]tUpper;
- reg  [N-1:0]tOutput;
+  wire [N-1:0]tInput;
+  wire [N-1:0]tLower;
+  wire [N-1:0]tUpper;
+  reg  [N-1:0]tOutput;
  
- assign tInput = {~Input  [N-1], Input  [N-2:0]};
- assign tLower = {~Lower  [N-1], Lower  [N-2:0]};
- assign tUpper = {~Upper  [N-1], Upper  [N-2:0]};
- assign Output = {~tOutput[N-1], tOutput[N-2:0]};
+  assign tInput = {~Input  [N-1], Input  [N-2:0]};
+  assign tLower = {~Lower  [N-1], Lower  [N-2:0]};
+  assign tUpper = {~Upper  [N-1], Upper  [N-2:0]};
+  assign Output = {~tOutput[N-1], tOutput[N-2:0]};
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   tOutput = 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      tOutput = 0;
 //------------------------------------------------------------------------------
 
-  end else begin
-   if(tInput < tLower) tOutput <= tLower; else
-   if(tInput > tUpper) tOutput <= tUpper; else
-                       tOutput <= tInput;
+    end else begin
+      if(tInput < tLower) tOutput <= tLower; else
+      if(tInput > tUpper) tOutput <= tUpper; else
+                          tOutput <= tInput;
+    end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

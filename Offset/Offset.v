@@ -19,27 +19,27 @@
 //==============================================================================
 
 module Offset #(
- parameter N = 8)(
+  parameter N = 8)(
  
- input      [N-1:0]Data,   // 2's Compliment
- input      [N-1:0]Offset, // 2's Compliment
+  input      [N-1:0]Data,   // 2's Compliment
+  input      [N-1:0]Offset, // 2's Compliment
  
- output reg [N-1:0]Output);
+  output reg [N-1:0]Output);
 //------------------------------------------------------------------------------
  
- wire [N:0]sum;
+  wire [N:0]sum;
  
- assign sum = {Data[N-1], Data} + {Offset[N-1], Offset};
+  assign sum = {Data[N-1], Data} + {Offset[N-1], Offset};
 //------------------------------------------------------------------------------
 
- always @(*) begin
-  case(sum[N:N-1])
-   2'b00,
-   2'b11: Output <= sum[N-1:0];
-   2'b01: Output <= {1'b0, {(N-1){1'b1}}};
-   2'b10: Output <= {1'b1, {(N-1){1'b0}}};
-   default:;
-  endcase
- end
+  always @(*) begin
+    case(sum[N:N-1])
+      2'b00,
+      2'b11: Output <= sum[N-1:0];
+      2'b01: Output <= {1'b0, {(N-1){1'b1}}};
+      2'b10: Output <= {1'b1, {(N-1){1'b0}}};
+      default:;
+    endcase
+  end
 endmodule
 //------------------------------------------------------------------------------

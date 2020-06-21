@@ -19,34 +19,34 @@
 //==============================================================================
 
 module S_SubSample(
- input nReset,
- input Clk,
+  input nReset,
+  input Clk,
   
- input      [23:0]Input,
- output reg [23:0]Output); // /2^24
+  input      [23:0]Input,
+  output reg [23:0]Output); // /2^24
 
- reg  [47:0] sum;
- reg  [23:0] Count;
- wire [47:0] e;
+  reg  [47:0] sum;
+  reg  [23:0] Count;
+  wire [47:0] e;
 
- assign e = {{24{Input[23]}}, Input};
+  assign e = {{24{Input[23]}}, Input};
  
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   sum   <= 0;
-   Count <= 0;
-  end else begin
-   if(~|Count) begin
-    if(&sum[47:24]) begin
-     Output <= 24'hFFFFFF;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      sum   <= 0;
+      Count <= 0;
     end else begin
-     Output <= sum[47:24] + sum[23];
+      if(~|Count) begin
+        if(&sum[47:24]) begin
+          Output <= 24'hFFFFFF;
+        end else begin
+          Output <= sum[47:24] + sum[23];
+        end
+        sum <= e;
+      end else begin
+        sum <= sum + e;
+      end
+      Count <= Count + 1'b1;
     end
-    sum <= e;
-   end else begin
-    sum <= sum + e;
-   end
-   Count <= Count + 1'b1;
   end
- end
 endmodule

@@ -22,94 +22,94 @@
 // Sample rate f_Clk / 512
 
 module ADS1201(
- input            nReset,
- input            Clk, // max 8 MHz
- input            Sync,
+  input            nReset,
+  input            Clk, // max 8 MHz
+  input            Sync,
 
- output reg [23:0]Output,
+  output reg [23:0]Output,
 
- output           ADC_Clk,
- input            ADC_Data);
+  output           ADC_Clk,
+  input            ADC_Data);
 //----------------------------------------------------------------------------
 
- reg        Data;
- reg  [23:0]Sum[7:0];
- reg  [ 2:0]Part;
- reg  [ 2:0]pPart;
+  reg        Data;
+  reg  [23:0]Sum[7:0];
+  reg  [ 2:0]Part;
+  reg  [ 2:0]pPart;
  
- reg  [ 8:0]Address;
- reg  [ 8:0]FIR_Address;
- wire [15:0]FIR_Data;
+  reg  [ 8:0]Address;
+  reg  [ 8:0]FIR_Address;
+  wire [15:0]FIR_Data;
  
- reg  [23:0]Result;
+  reg  [23:0]Result;
  
- reg  [23:0]tOutput;
- reg  [ 1:0]pSync;
+  reg  [23:0]tOutput;
+  reg  [ 1:0]pSync;
 //----------------------------------------------------------------------------
 
- integer j;
+  integer j;
 //----------------------------------------------------------------------------
 
- ADS1201_FIR FIR(
-  .clock  (!Clk),
-  .address(FIR_Address),
-  .q      (FIR_Data)
- );
+  ADS1201_FIR FIR(
+    .clock  (!Clk),
+    .address(FIR_Address),
+    .q      (FIR_Data)
+  );
 //----------------------------------------------------------------------------
 
- always @* begin
-  if(Data) begin
-   Result <= Sum[pPart] + {{8{FIR_Data[15]}}, FIR_Data};
-  end else begin
-   Result <= Sum[pPart] - {{8{FIR_Data[15]}}, FIR_Data};
+  always @* begin
+    if(Data) begin
+      Result <= Sum[pPart] + {{8{FIR_Data[15]}}, FIR_Data};
+    end else begin
+      Result <= Sum[pPart] - {{8{FIR_Data[15]}}, FIR_Data};
+    end
   end
- end
 //----------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   Data        <= 0;
-   Part        <= 0;
-   Address     <= 0;
-   FIR_Address <= 0;
-   tOutput     <= 0;
-   Output      <= 0;
-   pSync       <= 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      Data        <= 0;
+      Part        <= 0;
+      Address     <= 0;
+      FIR_Address <= 0;
+      tOutput     <= 0;
+      Output      <= 0;
+      pSync       <= 0;
    
-   for(j = 0; j < 8; j = j + 1) begin
-    Sum[j] <= 0;
-   end
+      for(j = 0; j < 8; j = j + 1) begin
+        Sum[j] <= 0;
+      end
 //----------------------------------------------------------------------------
 
-  end else begin
-   pSync <= {pSync[0], Sync};
+    end else begin
+      pSync <= {pSync[0], Sync};
    
-   if(pSync == 2'b01) begin
-    Output <= tOutput;
-   end
+      if(pSync == 2'b01) begin
+        Output <= tOutput;
+      end
 //------------------------------------------------------------------------------
 
-   if(~|Part) begin
-    Data        <= ADC_Data;
-    Address     <= Address + 1'b1;
-    FIR_Address <= Address + 1'b1;
-   end else begin
-    FIR_Address <= Address + {Part, 6'b0};
-   end
-   pPart <= Part;
-   Part  <= Part + 1'b1;
+      if(~|Part) begin
+        Data        <= ADC_Data;
+        Address     <= Address + 1'b1;
+        FIR_Address <= Address + 1'b1;
+      end else begin
+        FIR_Address <= Address + {Part, 6'b0};
+      end
+      pPart <= Part;
+      Part  <= Part + 1'b1;
 //----------------------------------------------------------------------------
 
-   if(&FIR_Address) begin
-    tOutput    <= Result;
-    Sum[pPart] <= 0;
-   end else begin
-    Sum[pPart] <= Result;
-   end
+      if(&FIR_Address) begin
+        tOutput    <= Result;
+        Sum[pPart] <= 0;
+      end else begin
+        Sum[pPart] <= Result;
+      end
+    end
   end
- end
 //----------------------------------------------------------------------------
 
- assign ADC_Clk = Part[2];
+  assign ADC_Clk = Part[2];
 endmodule
 //----------------------------------------------------------------------------

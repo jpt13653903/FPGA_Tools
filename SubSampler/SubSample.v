@@ -21,37 +21,37 @@
 // Takes a signed Input and averages 2^div samples for every one signed Output
 
 module SubSample(nReset, Clk, Input, Output);
- parameter n   = 18; // Length of data
- parameter div = 20; // Sample rate divided by 2^div
+  parameter n   = 18; // Length of data
+  parameter div = 20; // Sample rate divided by 2^div
  
- input  nReset;
- input  Clk;
+  input  nReset;
+  input  Clk;
   
- input      [n-1:0]Input;  // 2's Compliment
- output reg [n-1:0]Output; // 2's Compliment
+  input      [n-1:0]Input;  // 2's Compliment
+  output reg [n-1:0]Output; // 2's Compliment
  
- reg  [n+div-1:0] sum;
- reg  [  div-1:0] count;
- wire [n+div-1:0] e;
+  reg  [n+div-1:0] sum;
+  reg  [  div-1:0] count;
+  wire [n+div-1:0] e;
  
- assign e = {{div{Input[n-1]}}, Input};
+  assign e = {{div{Input[n-1]}}, Input};
  
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   sum   <= 0;
-   count <= 0;
-  end else begin
-   if(~|count) begin
-    if(&sum[n+div-2:div]) begin
-     Output <= sum[n+div-1:div];
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      sum   <= 0;
+      count <= 0;
     end else begin
-     Output <= sum[n+div-1:div] + sum[div-1];
+      if(~|count) begin
+        if(&sum[n+div-2:div]) begin
+          Output <= sum[n+div-1:div];
+        end else begin
+          Output <= sum[n+div-1:div] + sum[div-1];
+        end
+        sum <= e;
+      end else begin
+        sum <= sum + e;
+      end
+      count <= count + 1'b1;
     end
-    sum <= e;
-   end else begin
-    sum <= sum + e;
-   end
-   count <= count + 1'b1;
   end
- end
 endmodule

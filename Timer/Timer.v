@@ -19,17 +19,17 @@
 //==============================================================================
 
 module Timer #(
- parameter inc = 5'd20 // 1/f_Clk * 1e9
+  parameter inc = 5'd20 // 1/f_Clk * 1e9
 )(
- input           nReset,
- input           Clk,
- output reg[63:0]Timer // [ns]
+  input           nReset,
+  input           Clk,
+  output reg[63:0]Timer // [ns]
 );
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) Timer <= 0;
-  else        Timer <= Timer + inc;
- end
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) Timer <= 0;
+    else        Timer <= Timer + inc;
+  end
 endmodule
 //------------------------------------------------------------------------------

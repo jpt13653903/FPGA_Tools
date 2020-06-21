@@ -19,27 +19,27 @@
 //==============================================================================
 
 module uLimit #(
- parameter N     =     8,
- parameter Lower = 8'h00,
- parameter Upper = 8'hFF)(
+  parameter N     =     8,
+  parameter Lower = 8'h00,
+  parameter Upper = 8'hFF)(
 
- input nReset,
- input Clk,
+  input nReset,
+  input Clk,
   
- input      [N-1:0]Input,   // Unsigned
- output reg [N-1:0]Output); // Unsigned
+  input      [N-1:0]Input,   // Unsigned
+  output reg [N-1:0]Output); // Unsigned
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   Output = 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      Output = 0;
 //------------------------------------------------------------------------------
 
-  end else begin
-   if(Input < Lower) Output <= Lower; else
-   if(Input > Upper) Output <= Upper; else
-                     Output <= Input;
+    end else begin
+      if(Input < Lower) Output <= Lower; else
+      if(Input > Upper) Output <= Upper; else
+                        Output <= Input;
+    end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

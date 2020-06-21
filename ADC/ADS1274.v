@@ -19,89 +19,89 @@
 //==============================================================================
 
 module ADS1274(
- input nReset,
- input Clk, // -- max 50 MHz
- input Sync,
+  input nReset,
+  input Clk, // -- max 50 MHz
+  input Sync,
   
- output reg aClk,
- input      nDRdy,
- output reg SClk,
- input      Data,
+  output reg aClk,
+  input      nDRdy,
+  output reg SClk,
+  input      Data,
   
- output reg [95:0]DataOut); //  4x 24-bit, 2's Compliment
+  output reg [95:0]DataOut); //  4x 24-bit, 2's Compliment
 //------------------------------------------------------------------------------
 
- reg [ 1:0]state;
- reg [ 6:0]count;
- reg [94:0]tData;
- reg [95:0]tDataOut;
- reg [ 1:0]pSync;
+  reg [ 1:0]state;
+  reg [ 6:0]count;
+  reg [94:0]tData;
+  reg [95:0]tDataOut;
+  reg [ 1:0]pSync;
 //------------------------------------------------------------------------------
  
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   state    <= 0;
-   aClk     <= 0;
-   SClk     <= 0;
-   tData    <= 0;
-   DataOut  <= 0;
-   tDataOut <= 0;
-   pSync    <= 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      state    <= 0;
+      aClk     <= 0;
+      SClk     <= 0;
+      tData    <= 0;
+      DataOut  <= 0;
+      tDataOut <= 0;
+      pSync    <= 0;
 //------------------------------------------------------------------------------
 
-  end else begin
-   aClk <= ~aClk;
+    end else begin
+      aClk <= ~aClk;
 //------------------------------------------------------------------------------
 
-   pSync <= {pSync[0], Sync};
+      pSync <= {pSync[0], Sync};
    
-   if(pSync == 2'b01) begin
-    DataOut <= tDataOut;
-   end
+      if(pSync == 2'b01) begin
+        DataOut <= tDataOut;
+      end
 //------------------------------------------------------------------------------
 
-   case(state)
-    2'b00: begin
-     count[1:0] <= 2'd3;
-     if(!nDRdy) begin
-      state <= 2'b01;
-     end
+      case(state)
+        2'b00: begin
+          count[1:0] <= 2'd3;
+          if(!nDRdy) begin
+            state <= 2'b01;
+          end
+        end
+//------------------------------------------------------------------------------
+
+        2'b01: begin
+          if(~|count[1:0]) begin
+            count <= 7'd96;
+            state <= 2'b11;
+          end else begin
+            count[1:0] <= count[1:0] - 1'b1;
+          end
+        end
+//------------------------------------------------------------------------------
+
+        2'b11: begin
+          SClk  <= 1'b1;
+          count <= count - 1'b1;
+          state <= 2'b10;
+        end
+//------------------------------------------------------------------------------
+
+        2'b10: begin
+          SClk  <= 1'b0;
+          if(~|count) begin
+            {tDataOut[23: 0], tDataOut[47:24],
+              tDataOut[71:48], tDataOut[95:72]} <= {tData, Data};
+            state <= 2'b00;
+          end else begin
+            state <= 2'b11;
+          end
+          tData <= {tData[93:0], Data};
+        end
+//------------------------------------------------------------------------------
+
+        default:;
+      endcase
     end
-//------------------------------------------------------------------------------
-
-    2'b01: begin
-     if(~|count[1:0]) begin
-      count <= 7'd96;
-      state <= 2'b11;
-     end else begin
-      count[1:0] <= count[1:0] - 1'b1;
-     end
-    end
-//------------------------------------------------------------------------------
-
-    2'b11: begin
-     SClk  <= 1'b1;
-     count <= count - 1'b1;
-     state <= 2'b10;
-    end
-//------------------------------------------------------------------------------
-
-    2'b10: begin
-     SClk  <= 1'b0;
-     if(~|count) begin
-      {tDataOut[23: 0], tDataOut[47:24],
-       tDataOut[71:48], tDataOut[95:72]} <= {tData, Data};
-      state <= 2'b00;
-     end else begin
-      state <= 2'b11;
-     end
-     tData <= {tData[93:0], Data};
-    end
-//------------------------------------------------------------------------------
-
-    default:;
-   endcase
   end
- end
 endmodule
 //------------------------------------------------------------------------------

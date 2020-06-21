@@ -19,18 +19,18 @@
 //==============================================================================
 
 module S_Coupling(
- input  nReset,
- input  Clk, // 45 MHz
+  input  nReset,
+  input  Clk, // 45 MHz
 
- input  [23:0]Input,  // 2's Compliment
- output [23:0]Output, // 2's Compliment
+  input  [23:0]Input,  // 2's Compliment
+  output [23:0]Output, // 2's Compliment
 
- input  Coupling); // 1 = AC (1 Hz), 0 = DC
+  input  Coupling); // 1 = AC (1 Hz), 0 = DC
  
- wire [23:0]DC;
- wire [23:0]AC;
+  wire [23:0]DC;
+  wire [23:0]AC;
 
- ACDC #(24, 24, 8) ACDC1(nReset, Clk, Input, AC, DC);
+  ACDC #(24, 24, 8) ACDC1(nReset, Clk, Input, AC, DC);
  
- assign Output = Coupling ? AC : Input;
+  assign Output = Coupling ? AC : Input;
 endmodule

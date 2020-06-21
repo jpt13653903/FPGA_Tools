@@ -27,56 +27,56 @@
 // the error is integrated out.
 
 module ACDC(nReset, Clk, Input, AC, DC);
- parameter n   = 18;
- parameter div = 20; // Used for Subsample: > 10
- parameter iir =  8; // Bit accuracy of the IIR filter:              1
-                     //                            H(z) = ----------------------
-                     //                                   (2^iir) (1 - z^-1) + 1
-                     // Running at a sample rate of f_Clk / 2^div * 2^iir
-
- input nReset;
- input Clk;
-
- input      [n-1:0]Input; // 2's Compliment
- output reg [n-1:0]AC;    // 2's Compliment
- output reg [n-1:0]DC;    // 2's Compliment
+  parameter n   = 18;
+  parameter div = 20; // Used for Subsample: > 10
+  parameter iir =  8; // Bit accuracy of the IIR filter:              1
+                      //                            H(z) = ----------------------
+                      //                                   (2^iir) (1 - z^-1) + 1
+                      // Running at a sample rate of f_Clk / 2^div * 2^iir
  
- wire [      n  :0]ac;
- wire [      n-1:0]dc;
- reg  [div-iir-1:0]count;
- wire [      n  :0]inc;
+  input nReset;
+  input Clk;
  
- SubSample #(n, div) SubSample1(nReset, Clk, Input, dc);
- 
- assign ac = {Input[n-1], Input} - {DC[n-1], DC};
- 
- always @* begin
-  case(ac[n:n-1])
-   2'b00,
-   2'b11  : AC <= ac[n-1:0];
-   2'b01  : AC <= {n{1'b1}};
-   default: AC <= 0;
-  endcase
- end
- 
- assign inc = {dc[n-1], dc} - {DC[n-1], DC};
- 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   DC    <= 0;
-   count <= 0;
+  input      [n-1:0]Input; // 2's Compliment
+  output reg [n-1:0]AC;    // 2's Compliment
+  output reg [n-1:0]DC;    // 2's Compliment
   
-  end else begin
-   if(~|count) begin
-    if(|inc) begin
-     DC <= DC + {{(iir-1){inc[n]}}, inc[n:iir]} + inc[iir-1];
-    end else if(dc > DC) begin
-     DC <= DC + 1'b1;
-    end else if(dc < DC) begin
-     DC <= DC - 1'b1;
-    end
-   end
-   count <= count - 1'b1;
+  wire [      n  :0]ac;
+  wire [      n-1:0]dc;
+  reg  [div-iir-1:0]count;
+  wire [      n  :0]inc;
+  
+  SubSample #(n, div) SubSample1(nReset, Clk, Input, dc);
+  
+  assign ac = {Input[n-1], Input} - {DC[n-1], DC};
+  
+  always @* begin
+    case(ac[n:n-1])
+      2'b00,
+      2'b11  : AC <= ac[n-1:0];
+      2'b01  : AC <= {n{1'b1}};
+      default: AC <= 0;
+    endcase
   end
- end
+  
+  assign inc = {dc[n-1], dc} - {DC[n-1], DC};
+  
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      DC    <= 0;
+      count <= 0;
+    
+    end else begin
+      if(~|count) begin
+        if(|inc) begin
+          DC <= DC + {{(iir-1){inc[n]}}, inc[n:iir]} + inc[iir-1];
+        end else if(dc > DC) begin
+          DC <= DC + 1'b1;
+        end else if(dc < DC) begin
+          DC <= DC - 1'b1;
+        end
+      end
+      count <= count - 1'b1;
+    end
+  end
 endmodule

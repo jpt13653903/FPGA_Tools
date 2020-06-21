@@ -19,90 +19,90 @@
 //==============================================================================
 
 module RS232_Rx(
- input  nReset,
- input  Clk,
+  input  nReset,
+  input  Clk,
 
- output reg      DataReady,
- output reg [7:0]RxData,
- input           Ack,
+  output reg      DataReady,
+  output reg [7:0]RxData,
+  input           Ack,
 
- input Rx);
+  input Rx);
 
- parameter CountBits = 5; // Default parameters for 40 MHz clock
- parameter Count1    = 5'b01101; // f_Clk / BAUD
- parameter Count1_5  = 5'b10100; // f_Clk / BAUD * 1.5
+  parameter CountBits = 5; // Default parameters for 40 MHz clock
+  parameter Count1    = 5'b01101; // f_Clk / BAUD
+  parameter Count1_5  = 5'b10100; // f_Clk / BAUD * 1.5
  
- reg tRx;
+  reg tRx;
 
- reg [          1:0] state;
- reg [CountBits-1:0] count;
- reg [          7:0] tdata;
- reg [          2:0] count2;
+  reg [          1:0] state;
+  reg [CountBits-1:0] count;
+  reg [          7:0] tdata;
+  reg [          2:0] count2;
 
- reg set;
+  reg set;
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   tRx    <= 1'b1;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      tRx    <= 1'b1;
    
-   state  <= 2'b00;
-   count2 <= 3'b000;
-   RxData <= 8'h00;
-   set    <= 1'b0;
+      state  <= 2'b00;
+      count2 <= 3'b000;
+      RxData <= 8'h00;
+      set    <= 1'b0;
    
-  end else begin
-   tRx <= Rx;
+    end else begin
+      tRx <= Rx;
 
-   case(state)
-    2'b00: begin
-     if(!tRx) begin
-      count <= Count1_5;
-      state <= 2'b01;
-     end
-    end
+      case(state)
+        2'b00: begin
+          if(!tRx) begin
+            count <= Count1_5;
+            state <= 2'b01;
+          end
+        end
     
-    2'b01: begin
-     if(count == 2) begin
-      state <= 2'b10;
-     end
-     count <= count - 1'b1;
-    end
+        2'b01: begin
+          if(count == 2) begin
+            state <= 2'b10;
+          end
+          count <= count - 1'b1;
+        end
     
-    2'b10: begin
-     count <= Count1;
-     if(&count2) begin
-      if((!Ack) && (!DataReady)) begin
-       RxData <= {tRx, tdata[7:1]};
-       set    <= 1'b1;
-      end
-      state <= 2'b11;
-     end else begin
-      tdata <= {tRx, tdata[7:1]};
-      state <= 2'b01;
-     end
-     count2 <= count2 + 1'b1;
-    end
+        2'b10: begin
+          count <= Count1;
+          if(&count2) begin
+            if((!Ack) && (!DataReady)) begin
+              RxData <= {tRx, tdata[7:1]};
+              set    <= 1'b1;
+            end
+            state <= 2'b11;
+          end else begin
+            tdata <= {tRx, tdata[7:1]};
+            state <= 2'b01;
+          end
+          count2 <= count2 + 1'b1;
+        end
     
-    2'b11: begin
-     set <= 1'b0;
-     if(tRx) begin
-      state <= 2'b00;
-     end
-    end
+        2'b11: begin
+          set <= 1'b0;
+          if(tRx) begin
+            state <= 2'b00;
+          end
+        end
     
-    default:;
-   endcase
+        default:;
+      endcase
+    end
   end
- end
 //------------------------------------------------------------------------------
 
- always @(negedge Clk, posedge Ack, negedge nReset) begin
-  if(Ack || (!nReset)) begin
-   DataReady <= 1'b0;
-  end else begin
-   if(set) begin
-    DataReady <= 1'b1;
-   end
+  always @(negedge Clk, posedge Ack, negedge nReset) begin
+    if(Ack || (!nReset)) begin
+      DataReady <= 1'b0;
+    end else begin
+      if(set) begin
+        DataReady <= 1'b1;
+      end
+    end
   end
- end
 endmodule

@@ -19,44 +19,44 @@
 //==============================================================================
 
 module DDS_Triangle(
- input  nReset,
- input  Clk, // 43.945 kHz
- input  [17:0]Phase,
- input  [17:0]Skew0,
- input  [17:0]Skew1,
- input  [17:0]Skew2,
- output [18:0]Output);
+  input  nReset,
+  input  Clk, // 43.945 kHz
+  input  [17:0]Phase,
+  input  [17:0]Skew0,
+  input  [17:0]Skew1,
+  input  [17:0]Skew2,
+  output [18:0]Output);
 
- reg  [17:0]x;
- wire [17:0]x1;
- wire [17:0]x2;
+  reg  [17:0]x;
+  wire [17:0]x1;
+  wire [17:0]x2;
 
- wire [17:0]s3;
+  wire [17:0]s3;
 
- wire part;
+  wire part;
 
- wire [35:0]y1;
- wire [27:0]y2;
+  wire [35:0]y1;
+  wire [27:0]y2;
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   x <= 0;
-  end else begin
-   x <= Phase;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      x <= 0;
+    end else begin
+      x <= Phase;
+    end
   end
- end
 
- assign x1 = -x;
+  assign x1 = -x;
 
- assign part = x > Skew0;
+  assign part = x > Skew0;
 
- assign x2 = (part == 1'b0) ? x : x1;
+  assign x2 = (part == 1'b0) ? x : x1;
 
- assign s3 = (part == 1'b0) ? Skew1 : Skew2;
+  assign s3 = (part == 1'b0) ? Skew1 : Skew2;
 
- assign y1 = x2 * s3;
+  assign y1 = x2 * s3;
 
- assign y2 = y1[35:8] + y1[7];
+  assign y2 = y1[35:8] + y1[7];
 
- assign Output = (~|y2[27:19]) ? y2[18:0] : {19{1'b1}};
+  assign Output = (~|y2[27:19]) ? y2[18:0] : {19{1'b1}};
 endmodule

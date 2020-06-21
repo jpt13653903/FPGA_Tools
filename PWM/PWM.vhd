@@ -23,68 +23,68 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
 entity PWM is
- port( 
-  nReset : in  std_logic; 
-  Clk    : in  std_logic; -- 90 MHz
-  Sync   : in  std_logic; -- 351.563 kHz
-  Duty   : in  std_logic_vector(23 downto 0);
+  port( 
+    nReset : in  std_logic; 
+    Clk    : in  std_logic; -- 90 MHz
+    Sync   : in  std_logic; -- 351.563 kHz
+    Duty   : in  std_logic_vector(23 downto 0);
 
-  PWM    : out std_logic
- );
+    PWM    : out std_logic
+  );
 end entity PWM;
 
 architecture a1 of PWM is
- component Counter8 is
-  port(
-   nReset : in  std_logic;
-   Clk    : in  std_logic;
-   Q      : out std_logic_vector(7 downto 0)
-  );
- end component Counter8;
+  component Counter8 is
+    port(
+      nReset : in  std_logic;
+      Clk    : in  std_logic;
+      Q      : out std_logic_vector(7 downto 0)
+    );
+  end component Counter8;
 
- component NS is
-  port( 
-   nReset : in  std_logic; 
-   Clk    : in  std_logic;
+  component NS is
+    port( 
+      nReset : in  std_logic; 
+      Clk    : in  std_logic;
 
-   Input    : in  std_logic_vector(17 downto 0);
-   OutNS    : out std_logic_vector( 7 downto 0)
-  );
- end component NS;
+      Input    : in  std_logic_vector(17 downto 0);
+      OutNS    : out std_logic_vector( 7 downto 0)
+    );
+  end component NS;
 
- signal CounterSync : std_logic;
+  signal CounterSync : std_logic;
 
- signal tD      : std_logic_vector(7 downto 0);
- signal D       : std_logic_vector(7 downto 0);
- signal Count   : std_logic_vector(7 downto 0);
- signal greater : std_logic;
- signal pSync   : std_logic;
- signal tPWM    : std_logic;
+  signal tD      : std_logic_vector(7 downto 0);
+  signal D       : std_logic_vector(7 downto 0);
+  signal Count   : std_logic_vector(7 downto 0);
+  signal greater : std_logic;
+  signal pSync   : std_logic;
+  signal tPWM    : std_logic;
 begin
- Counter : Counter8 port map(CounterSync, Clk, Count);
+  Counter : Counter8 port map(CounterSync, Clk, Count);
  
- NS1 : NS port map(nReset, Sync, Duty(23 downto 6), tD);
+  NS1 : NS port map(nReset, Sync, Duty(23 downto 6), tD);
 
- greater <= '1' when (D >= Count) else '0';
+  greater <= '1' when (D >= Count) else '0';
 
- process(Clk, nReset) is
- begin
-  if nReset = '0' then
-   CounterSync <= '0';
+  process(Clk, nReset) is
+  begin
+    if nReset = '0' then
+      CounterSync <= '0';
 
-   tPWM  <= '0';
-   D     <= "00000000";
-   pSync <= '1';
-  elsif rising_edge(Clk) then
-   tPWM <= greater;
+      tPWM  <= '0';
+      D     <= "00000000";
+      pSync <= '1';
+    elsif rising_edge(Clk) then
+      tPWM <= greater;
 
-   if (pSync = '0') and (Sync = '1') then
-    CounterSync <= '1';
-    D <= tD;
-   end if;
-   pSync <= Sync;
-  end if;
- end process;
+      if (pSync = '0') and (Sync = '1') then
+        CounterSync <= '1';
+        D <= tD;
+      end if;
+      pSync <= Sync;
+    end if;
+  end process;
 
- PWM <= tPWM;
+  PWM <= tPWM;
 end architecture a1;

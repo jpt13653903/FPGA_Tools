@@ -19,44 +19,44 @@
 //==============================================================================
 
 module RS232(
- input  nReset,
- input  Clk,
+  input  nReset,
+  input  Clk,
 
- input  [7:0]TxData,
- input       Send,
- output      Busy,
+  input  [7:0]TxData,
+  input       Send,
+  output      Busy,
 
- output      DataReady,
- output [7:0]RxData,
- input       Ack,
+  output      DataReady,
+  output [7:0]RxData,
+  input       Ack,
   
- output Tx,
- input  Rx);
+  output Tx,
+  input  Rx);
  
- parameter CountBits = 5; // Default parameters for 50 MHz clock
- parameter Count0_5  = 5'd_8; // f_Clk / BAUD / 2
- parameter Count1    = 5'd17; // f_Clk / BAUD
- parameter Count1_5  = 5'd25; // f_Clk / BAUD * 1.5
+  parameter CountBits = 5; // Default parameters for 50 MHz clock
+  parameter Count0_5  = 5'd_8; // f_Clk / BAUD / 2
+  parameter Count1    = 5'd17; // f_Clk / BAUD
+  parameter Count1_5  = 5'd25; // f_Clk / BAUD * 1.5
  
- RS232_Tx #(CountBits, Count0_5, Count1) Sender(
-  nReset,
-  Clk,
+  RS232_Tx #(CountBits, Count0_5, Count1) Sender(
+    nReset,
+    Clk,
 
-  TxData,
-  Send,
-  Busy,
+    TxData,
+    Send,
+    Busy,
   
-  Tx
- );
+    Tx
+  );
 
- RS232_Rx #(CountBits, Count1, Count1_5) Receiver(
-  nReset,
-  Clk,
+  RS232_Rx #(CountBits, Count1, Count1_5) Receiver(
+    nReset,
+    Clk,
 
-  DataReady,
-  RxData,
-  Ack,
+    DataReady,
+    RxData,
+    Ack,
 
-  Rx
- );
+    Rx
+  );
 endmodule

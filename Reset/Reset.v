@@ -19,30 +19,30 @@
 //==============================================================================
 
 module Reset(
- input  nReset,
- input  Clk,
+  input  nReset,
+  input  Clk,
 
- output reg Output);
+  output reg Output);
 //------------------------------------------------------------------------------
 
- // Default values for a 48.828 kHz clock
- parameter n = 13;       // Length of the counter
- parameter c = 13'd4883; // 100 ms * f_Clk
+  // Default values for a 48.828 kHz clock
+  parameter n = 13;       // Length of the counter
+  parameter c = 13'd4883; // 100 ms * f_Clk
 //------------------------------------------------------------------------------
 
- reg [n-1:0]count; // 100 ms
+  reg [n-1:0]count; // 100 ms
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   Output <= 0;
-   count  <= c;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      Output <= 0;
+      count  <= c;
 //------------------------------------------------------------------------------
    
-  end else begin
-   if(~|count) Output <= 1'b1;
-   count <= count - 1'b1;
+    end else begin
+      if(~|count) Output <= 1'b1;
+      count <= count - 1'b1;
+    end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

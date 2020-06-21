@@ -28,21 +28,21 @@ use ieee.std_logic_unsigned.all;
 --------------------------------------------------------------------------------
 
 entity CPU_Adder is
- port(
-  A        : in  std_logic_vector(7 downto 0);
-  B        : in  std_logic_vector(8 downto 0);
-  Carry_In : in  std_logic;
-  Y        : out std_logic_vector(7 downto 0);
-  Carry    : out std_logic
- );
+  port(
+    A        : in  std_logic_vector(7 downto 0);
+    B        : in  std_logic_vector(8 downto 0);
+    Carry_In : in  std_logic;
+    Y        : out std_logic_vector(7 downto 0);
+    Carry    : out std_logic
+  );
 end entity CPU_Adder;
 --------------------------------------------------------------------------------
 
 architecture a1 of CPU_Adder is
- signal tY : std_logic_vector(8 downto 0);
+  signal tY : std_logic_vector(8 downto 0);
 begin
- tY     <= A + B + Carry_In;
- Y      <= tY(7 downto 0);
- Carry  <= tY(8);
+  tY     <= A + B + Carry_In;
+  Y      <= tY(7 downto 0);
+  Carry  <= tY(8);
 end architecture a1;
 --------------------------------------------------------------------------------

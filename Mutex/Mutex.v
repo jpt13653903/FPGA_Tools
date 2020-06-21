@@ -19,39 +19,39 @@
 //==============================================================================
 
 module Mutex #(
- parameter n = 2
+  parameter n = 2
 )(
- input             nReset,
- input             Clk,
+  input             nReset,
+  input             Clk,
  
- input      [n-1:0]Request, // index 0 has highest priority
- output reg [n-1:0]Grant
+  input      [n-1:0]Request, // index 0 has highest priority
+  output reg [n-1:0]Grant
 );
 //------------------------------------------------------------------------------
 
- integer j;
- integer q;
+  integer j;
+  integer q;
 //------------------------------------------------------------------------------
 
- always @(negedge nReset, posedge Clk) begin
-  if(!nReset) begin
-   Grant <= 0;
+  always @(negedge nReset, posedge Clk) begin
+    if(!nReset) begin
+      Grant <= 0;
 //------------------------------------------------------------------------------
 
-  end else begin
-   if(|Grant) begin
-    Grant <= Grant & Request;
+    end else begin
+      if(|Grant) begin
+        Grant <= Grant & Request;
 //------------------------------------------------------------------------------
     
-   end else begin
-    for(j = 0; j < n; j = j + 1) begin
-     Grant[j] = Request[j];
-     for(q = 0; q < j; q = q + 1) begin
-      Grant[j] = Grant[j] & (~Request[q]);
-     end
+      end else begin
+        for(j = 0; j < n; j = j + 1) begin
+          Grant[j] = Request[j];
+          for(q = 0; q < j; q = q + 1) begin
+            Grant[j] = Grant[j] & (~Request[q]);
+          end
+        end
+      end
     end
-   end
   end
- end
 endmodule
 //------------------------------------------------------------------------------

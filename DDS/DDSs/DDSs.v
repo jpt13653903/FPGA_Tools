@@ -19,66 +19,66 @@
 //==============================================================================
 
 module DDSs #(
- parameter n = 12)(
+  parameter n = 12)(
  
- input  nReset,
- input  Clk,
+  input  nReset,
+  input  Clk,
 
- input  [24*n-1:0]Frequency, // 2's Compliment
- input  [16*n-1:0]Phase,     // Unsigned
- input  [16*n-1:0]Skew,      // Unsigned
- input  [16*n-1:0]Amplitude, // Unsigned
- input  [16*n-1:0]Offset,    // 2's Compliment
+  input  [24*n-1:0]Frequency, // 2's Compliment
+  input  [16*n-1:0]Phase,     // Unsigned
+  input  [16*n-1:0]Skew,      // Unsigned
+  input  [16*n-1:0]Amplitude, // Unsigned
+  input  [16*n-1:0]Offset,    // 2's Compliment
 
- input  [   n-1:0]Waveform,  // 0 = sin; 1 = triangle
- input            Sync,
+  input  [   n-1:0]Waveform,  // 0 = sin; 1 = triangle
+  input            Sync,
 
- output [16*n-1:0]Output,    // Signed Integer
+  output [16*n-1:0]Output,    // Signed Integer
 
- input  [15    :0]RAM_Data,
- input  [ 9    :0]RAM_Address,
- input  [   n-1:0]RAM_Write,
- input            RAM_Clk);
+  input  [15    :0]RAM_Data,
+  input  [ 9    :0]RAM_Address,
+  input  [   n-1:0]RAM_Write,
+  input            RAM_Clk);
 //------------------------------------------------------------------------------
 
- wire [18*n-1:0]Skew0;
- wire [18*n-1:0]Skew1;
- wire [18*n-1:0]Skew2;
+  wire [18*n-1:0]Skew0;
+  wire [18*n-1:0]Skew1;
+  wire [18*n-1:0]Skew2;
 //------------------------------------------------------------------------------
 
- DDS_Const Const1(
-  nReset,
-  RAM_Clk,
-  {{(16*(12-n)){1'b0}}, Skew },
-  Skew0,
-  Skew1,
-  Skew2
- );
-
- generate
-  genvar i;
-  for(i = 0; i < n; i = i + 1) begin: G_DDS
-   DDS DDS1(
+  DDS_Const Const1(
     nReset,
-    Clk,   
+    RAM_Clk,
+    {{(16*(12-n)){1'b0}}, Skew },
+    Skew0,
+    Skew1,
+    Skew2
+  );
 
-    Frequency[24*i+23:24*i],
-    Phase    [16*i+15:16*i],
-    Skew0    [18*i+17:18*i],
-    Skew1    [18*i+17:18*i],
-    Skew2    [18*i+17:18*i],
-    Amplitude[16*i+15:16*i],
-    Offset   [16*i+15:16*i],
-    Waveform [i],
-    Sync,
+  generate
+    genvar i;
+    for(i = 0; i < n; i = i + 1) begin: G_DDS
+      DDS DDS1(
+        nReset,
+        Clk,   
 
-    Output[16*i+15:16*i],
+        Frequency[24*i+23:24*i],
+        Phase    [16*i+15:16*i],
+        Skew0    [18*i+17:18*i],
+        Skew1    [18*i+17:18*i],
+        Skew2    [18*i+17:18*i],
+        Amplitude[16*i+15:16*i],
+        Offset   [16*i+15:16*i],
+        Waveform [i],
+        Sync,
 
-    RAM_Data,
-    RAM_Address,
-    RAM_Write[i],
-    RAM_Clk
-   );
-  end
- endgenerate
+        Output[16*i+15:16*i],
+
+        RAM_Data,
+        RAM_Address,
+        RAM_Write[i],
+        RAM_Clk
+      );
+    end
+  endgenerate
 endmodule
